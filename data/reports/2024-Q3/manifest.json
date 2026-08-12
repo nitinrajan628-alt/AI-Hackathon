@@ -1,0 +1,103 @@
+{
+  "review_id": "2024-Q3",
+  "review_label": "2024 Q3",
+  "slide_count": 13,
+  "slides": [
+    {
+      "slide_number": 1,
+      "section": "Overview",
+      "title": "2024 Q3 Reserve Review",
+      "headline": "Quarterly actuarial reserve review",
+      "png_file": "slide_02.png",
+      "plain_text": "2024 Q3 Reserve Review\nQuarterly actuarial reserve review\nReporting group: Demo Insurance Group\nEntities: Demo Insurance UK; Demo Insurance Europe\nValuation date: 2024-09-30\nReporting currency: GBP"
+    },
+    {
+      "slide_number": 2,
+      "section": "Overview",
+      "title": "Executive Summary",
+      "headline": "Total reserves stand at GBP 580m at the valuation date",
+      "png_file": "slide_03.png",
+      "plain_text": "Executive Summary\nTotal reserves stand at GBP 580m at the valuation date\nTotal reserve: GBP 580m\nUltimate claims: GBP 3,207.8m\nReviews in library: 1 of 8\nReserves by class: Casualty GBP 196m; Motor GBP 148m; Property GBP 138m; Marine GBP 98m.\nThis is the first review in the packaged library; comparative movements will be shown from next quarter.\nEarly signs of pressure in recent Casualty accident years are being monitored, although Casualty is not yet a dominant theme."
+    },
+    {
+      "slide_number": 3,
+      "section": "Reserve Position",
+      "title": "Overall Reserve Position",
+      "headline": "Total reserve of GBP 580m across four reserving classes",
+      "png_file": "slide_04.png",
+      "plain_text": "Overall Reserve Position\nTotal reserve of GBP 580m across four reserving classes\nReserving Class | Current (GBP m)\nCasualty | 196.0\nProperty | 138.0\nMotor | 148.0\nMarine | 98.0\nTotal | 580.0"
+    },
+    {
+      "slide_number": 4,
+      "section": "Reserve Position",
+      "title": "Reserve Composition by Loss Type",
+      "headline": "Composition shown in place of quarterly movement for the first packaged review",
+      "png_file": "slide_05.png",
+      "plain_text": "Reserve Composition by Loss Type\nComposition shown in place of quarterly movement for the first packaged review\nLoss Type | Reserve (GBP m)\nAttritional | 341.9\nLarge | 196.7\nCat | 41.4"
+    },
+    {
+      "slide_number": 5,
+      "section": "Reserve Position",
+      "title": "Reserving Class Commentary",
+      "headline": "Principal class movements and drivers",
+      "png_file": "slide_06.png",
+      "plain_text": "Reserving Class Commentary\nPrincipal class movements and drivers\nCasualty: reserve of GBP 196m. Attritional emergence in recent accident years is marginally above expectation and remains under observation.\nProperty: reserve of GBP 138m. Experience is within expectation; catastrophe exposure is monitored seasonally.\nMotor: reserve of GBP 148m. Frequency and severity trends remain within expectation.\nMarine: reserve of GBP 98m. Experience remains volatile but within the reserved position."
+    },
+    {
+      "slide_number": 6,
+      "section": "Claims",
+      "title": "Claims Experience",
+      "headline": "Cumulative paid claims of GBP 2,627.8m on the latest diagonal",
+      "png_file": "slide_07.png",
+      "plain_text": "Claims Experience\nCumulative paid claims of GBP 2,627.8m on the latest diagonal\nReserving Class | 2024 Q3 (GBP m)\nCasualty | 440.3\nProperty | 1030.0\nMotor | 889.8\nMarine | 267.7"
+    },
+    {
+      "slide_number": 7,
+      "section": "Assumptions",
+      "title": "Assumption and Methodology Changes",
+      "headline": "Assumption basis summarised; no prior packaged review for comparison",
+      "png_file": "slide_08.png",
+      "plain_text": "Assumption and Methodology Changes\nAssumption basis summarised; no prior packaged review for comparison\nReserving Class | Projection Method | Selections\nCasualty | Bornhuetter-Ferguson | 8\nCasualty | Chain Ladder | 20\nCasualty | Expected Loss Ratio | 4\nMarine | Bornhuetter-Ferguson | 12\nMarine | Chain Ladder | 30\nMarine | Expected Loss Ratio | 6\nMotor | Bornhuetter-Ferguson | 8\nMotor | Chain Ladder | 20\nMotor | Expected Loss Ratio | 4\nProperty | Bornhuetter-Ferguson | 12\nProperty | Chain Ladder | 30\nProperty | Expected Loss Ratio | 6\nAssumption selections are made at Entity, Reserving Class, Loss Type and Accident Year."
+    },
+    {
+      "slide_number": 8,
+      "section": "Class Deep Dive",
+      "title": "Casualty Reserve Development",
+      "headline": "Casualty reserve of GBP 196m by accident year",
+      "png_file": "slide_09.png",
+      "plain_text": "Casualty Reserve Development\nCasualty reserve of GBP 196m by accident year\nAttritional emergence in recent accident years is marginally above expectation and remains under observation."
+    },
+    {
+      "slide_number": 9,
+      "section": "Large and Cat",
+      "title": "Large and Cat Loss Development",
+      "headline": "Large and Cat reserves of GBP 238.1m",
+      "png_file": "slide_10.png",
+      "plain_text": "Large and Cat Loss Development\nLarge and Cat reserves of GBP 238.1m\nReserving Class | Loss Type | Reserve (GBP m)\nCasualty | Large | 91.4\nProperty | Large | 37.7\nProperty | Cat | 26.2\nMotor | Large | 31.1\nMarine | Large | 36.5\nMarine | Cat | 15.2\nLarge and Cat experience is within expectation this quarter."
+    },
+    {
+      "slide_number": 10,
+      "section": "Alternative Views",
+      "title": "Reserves by Region",
+      "headline": "Total reserve of GBP 580m by Region",
+      "png_file": "slide_11.png",
+      "plain_text": "Reserves by Region\nTotal reserve of GBP 580m by Region\nRegion | 2024 Q3 (GBP m)\nUK and Ireland | 276.6\nContinental Europe | 197.2\nInternational | 106.2\nThe same reserves can be aggregated by Reserving Class, Finance Class, Region, Business Unit, Loss Type, Entity or Accident Year; Region is shown here as the management view for this quarter."
+    },
+    {
+      "slide_number": 11,
+      "section": "Uncertainties",
+      "title": "Key Uncertainties and Areas of Focus",
+      "headline": "Qualitative areas of focus from the actuarial review",
+      "png_file": "slide_12.png",
+      "plain_text": "Key Uncertainties and Areas of Focus\nQualitative areas of focus from the actuarial review\nRecent Casualty accident years are immature and small changes in reported experience could move selected ultimates in either direction.\nClaims inflation remains above long-term averages and continues to be monitored against the assumptions adopted in this review.\nLarge loss frequency has been within expectation, but individual case development remains a source of volatility for Property and Marine."
+    },
+    {
+      "slide_number": 12,
+      "section": "Conclusion",
+      "title": "Conclusion and Next Review",
+      "headline": "Overall reserve conclusion and forward focus",
+      "png_file": "slide_13.png",
+      "plain_text": "Conclusion and Next Review\nOverall reserve conclusion and forward focus\nThe reserve position is broadly stable this quarter. Recent Casualty accident years will be watched closely at the next review.\nThis review has been prepared by the actuarial function for management and Board use. Selections reflect actuarial judgement applied to the data available at the valuation date; they will be reassessed at the next quarterly review.\nTotal reserve: GBP 580m"
+    }
+  ]
+}

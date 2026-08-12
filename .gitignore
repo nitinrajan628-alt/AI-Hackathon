@@ -1,0 +1,24 @@
+# Environment / secrets
+.env
+*.env.local
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local artefacts
+data/diagnostics.db
+data/diagnostics.db-journal
+data/diagnostics.db-wal
+data/diagnostics.db-shm
+*.log
+
+# OS / editor
+.DS_Store
+.vscode/settings.local.json

@@ -1,0 +1,37 @@
+# Non-secret language-model provider defaults. Secrets (GEMINI_API_KEY /
+# OPENAI_API_KEY) are supplied only through environment variables / .env and
+# are never stored here.
+#
+# TO SWITCH PROVIDER: change LLM_PROVIDER in .env to `gemini`, `openai` or
+# `fake`, then restart the app. Nothing else needs to change - each provider
+# below carries its own default model and key variable.
+provider_env_var: LLM_PROVIDER
+model_env_var: LLM_MODEL          # optional per-run override of the model
+
+defaults:
+  provider: gemini
+  timeout_seconds: 30
+  max_retries: 2
+
+providers:
+  gemini:
+    label: Google Gemini
+    model: gemini-3.5-flash-lite
+    model_env_var: GEMINI_MODEL   # optional provider-specific override
+    key_env_var: GEMINI_API_KEY
+    api_version: v1
+    thinking_level: low
+  openai:
+    label: OpenAI (ChatGPT)
+    model: gpt-4.1-mini
+    model_env_var: OPENAI_MODEL
+    key_env_var: OPENAI_API_KEY
+  fake:
+    label: Offline rule-based provider
+    model: rule-based
+    key_env_var: null
+
+# Maximum structured result rows sent to the answer call across all query results.
+answer_evidence_row_limit: 100
+# Maximum query plans the orchestrator will execute for one user message.
+max_query_plans_per_message: 3

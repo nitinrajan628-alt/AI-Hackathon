@@ -1,0 +1,103 @@
+{
+  "review_id": "2025-Q3",
+  "review_label": "2025 Q3",
+  "slide_count": 13,
+  "slides": [
+    {
+      "slide_number": 1,
+      "section": "Overview",
+      "title": "2025 Q3 Reserve Review",
+      "headline": "Quarterly actuarial reserve review",
+      "png_file": "slide_02.png",
+      "plain_text": "2025 Q3 Reserve Review\nQuarterly actuarial reserve review\nReporting group: Demo Insurance Group\nEntities: Demo Insurance UK; Demo Insurance Europe\nValuation date: 2025-09-30\nReporting currency: GBP"
+    },
+    {
+      "slide_number": 2,
+      "section": "Overview",
+      "title": "Executive Summary",
+      "headline": "Overall reserves increased GBP 8m to GBP 606m",
+      "png_file": "slide_03.png",
+      "plain_text": "Executive Summary\nOverall reserves increased GBP 8m to GBP 606m\nTotal reserve: GBP 606m\nQuarterly movement: +GBP 8m\nUltimate claims: GBP 3,672.6m\nThe principal increases were Casualty +GBP 4m and Property +GBP 4m.\nNo projection-method selections changed this quarter.\nCasualty strengthening is now a material contributor to reserve movement; Property large loss activity is a secondary theme."
+    },
+    {
+      "slide_number": 3,
+      "section": "Reserve Position",
+      "title": "Overall Reserve Position",
+      "headline": "Total reserve of GBP 606m against GBP 598m at 2025 Q2",
+      "png_file": "slide_04.png",
+      "plain_text": "Overall Reserve Position\nTotal reserve of GBP 606m against GBP 598m at 2025 Q2\nReserving Class | Current (GBP m) | Prior quarter (GBP m) | Movement (GBP m)\nCasualty | 212.0 | 208.0 | 4.0\nProperty | 146.0 | 142.0 | 4.0\nMotor | 150.0 | 150.0 | 0.0\nMarine | 98.0 | 98.0 | 0.0\nTotal | 606.0 | 598.0 | 8.0"
+    },
+    {
+      "slide_number": 4,
+      "section": "Reserve Position",
+      "title": "Reserve Movement in the Quarter",
+      "headline": "Reserves moved from GBP 598m at 2025 Q2 to GBP 606m, a movement of +GBP 8m",
+      "png_file": "slide_05.png",
+      "plain_text": "Reserve Movement in the Quarter\nReserves moved from GBP 598m at 2025 Q2 to GBP 606m, a movement of +GBP 8m\nReserving Class | Movement (GBP m)\nCasualty | 4.0\nProperty | 4.0\nMotor | 0.0\nMarine | 0.0\nTotal | 8.0"
+    },
+    {
+      "slide_number": 5,
+      "section": "Reserve Position",
+      "title": "Reserving Class Commentary",
+      "headline": "Principal class movements and drivers",
+      "png_file": "slide_06.png",
+      "plain_text": "Reserving Class Commentary\nPrincipal class movements and drivers\nCasualty: strengthened GBP 4m. Recent accident years remain the principal focus; strengthening reflects sustained adverse emergence.\nProperty: strengthened GBP 4m. Large loss development from the September windstorm events is the main driver.\nMotor: broadly flat in the quarter.\nMarine: broadly flat in the quarter."
+    },
+    {
+      "slide_number": 6,
+      "section": "Claims",
+      "title": "Claims Experience",
+      "headline": "Cumulative paid claims of GBP 3,066.6m, +GBP 438.8m year-on-year (2024 Q3)",
+      "png_file": "slide_07.png",
+      "plain_text": "Claims Experience\nCumulative paid claims of GBP 3,066.6m, +GBP 438.8m year-on-year (2024 Q3)\nReserving Class | 2025 Q3 (GBP m) | 2024 Q3 (GBP m) | Change (GBP m)\nCasualty | 525.5 | 440.3 | 85.1\nProperty | 1170.4 | 1030.0 | 140.5\nMotor | 1057.5 | 889.8 | 167.8\nMarine | 313.2 | 267.7 | 45.5\nFigures are cumulative paid claims on the latest development diagonal of each review.\nMovements reflect both settlement of older accident years and emergence of the current year."
+    },
+    {
+      "slide_number": 7,
+      "section": "Assumptions",
+      "title": "Assumption and Methodology Changes",
+      "headline": "No projection-method changes since 2025 Q2",
+      "png_file": "slide_08.png",
+      "plain_text": "Assumption and Methodology Changes\nNo projection-method changes since 2025 Q2\nA management loading of GBP 1.5m is held for Property Cat accident year 2025 (Demo Insurance UK)."
+    },
+    {
+      "slide_number": 8,
+      "section": "Class Deep Dive",
+      "title": "Casualty Reserve Development",
+      "headline": "Casualty reserve of GBP 212m, +GBP 4m in the quarter",
+      "png_file": "slide_09.png",
+      "plain_text": "Casualty Reserve Development\nCasualty reserve of GBP 212m, +GBP 4m in the quarter\nAccident years 2023 to 2025 contribute +GBP 8.5m of the +GBP 4m movement.\nThe largest single accident-year movement is 2025 at +GBP 10.6m.\nRecent accident years remain the principal focus; strengthening reflects sustained adverse emergence."
+    },
+    {
+      "slide_number": 9,
+      "section": "Large and Cat",
+      "title": "Large and Cat Loss Development",
+      "headline": "Large and Cat reserves of GBP 252.6m, +GBP 6.6m in the quarter",
+      "png_file": "slide_10.png",
+      "plain_text": "Large and Cat Loss Development\nLarge and Cat reserves of GBP 252.6m, +GBP 6.6m in the quarter\nReserving Class | Loss Type | Reserve (GBP m)\nCasualty | Large | 98.8\nProperty | Large | 42.8\nProperty | Cat | 27.7\nMotor | Large | 31.5\nMarine | Large | 36.5\nMarine | Cat | 15.2\nProperty Large: +GBP 4m in the quarter.\nCasualty Large: +GBP 1.9m in the quarter.\nProperty Cat: +GBP 0.8m in the quarter.\nDevelopment on the September 2025 windstorm events is the principal large-loss theme this quarter."
+    },
+    {
+      "slide_number": 10,
+      "section": "Alternative Views",
+      "title": "Reserves by Region",
+      "headline": "Total reserve of GBP 606m by Region",
+      "png_file": "slide_11.png",
+      "plain_text": "Reserves by Region\nTotal reserve of GBP 606m by Region\nRegion | 2025 Q3 (GBP m) | 2025 Q2 (GBP m) | Movement (GBP m)\nUK and Ireland | 288.4 | 284.8 | 3.6\nContinental Europe | 206.6 | 203.7 | 2.9\nInternational | 111.0 | 109.5 | 1.5\nThe same reserves can be aggregated by Reserving Class, Finance Class, Region, Business Unit, Loss Type, Entity or Accident Year; Region is shown here as the management view for this quarter."
+    },
+    {
+      "slide_number": 11,
+      "section": "Uncertainties",
+      "title": "Key Uncertainties and Areas of Focus",
+      "headline": "Qualitative areas of focus from the actuarial review",
+      "png_file": "slide_12.png",
+      "plain_text": "Key Uncertainties and Areas of Focus\nQualitative areas of focus from the actuarial review\nCasualty strengthening is now material; the principal uncertainty is whether recent accident years have been strengthened sufficiently.\nSeptember windstorm events have increased Property large and catastrophe reserves; a management loading is held pending settlement.\nClaims inflation remains elevated for liability classes."
+    },
+    {
+      "slide_number": 12,
+      "section": "Conclusion",
+      "title": "Conclusion and Next Review",
+      "headline": "Overall reserve conclusion and forward focus",
+      "png_file": "slide_13.png",
+      "plain_text": "Conclusion and Next Review\nOverall reserve conclusion and forward focus\nCasualty strengthening and Property large loss development are the principal themes. Both will be revisited at the year-end review.\nThis review has been prepared by the actuarial function for management and Board use. Selections reflect actuarial judgement applied to the data available at the valuation date; they will be reassessed at the next quarterly review.\nTotal reserve: GBP 606m"
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+# Dataset catalogue - the only source used by the policy validator and the
+# query compiler to map a validated plan onto database tables and columns.
+# The language model never sees raw table or column names other than the
+# canonical identifiers below.
+
+row_limits:
+  default: 20
+  max: 200
+
+datasets:
+  results:
+    table: result_snapshot
+    label: Selected results
+    description: Selected result snapshot at Review x Entity x Business Unit x Region x Finance Class x Reserving Class x Loss Type x Accident Year.
+    grain: [entity, business_unit, region, finance_class, reserving_class, loss_type, accident_year]
+    measures:
+      paid_claims:      {column: paid_claims,      label: Paid claims,      unit: GBP, additive: true}
+      incurred_claims:  {column: incurred_claims,  label: Incurred claims,  unit: GBP, additive: true}
+      case_reserves:    {column: case_reserves,    label: Case reserves,    unit: GBP, additive: true}
+      ultimate_claims:  {column: ultimate_claims,  label: Ultimate claims,  unit: GBP, additive: true}
+      ibnr:             {column: ibnr,             label: IBNR,             unit: GBP, additive: true}
+      total_reserve:    {column: total_reserve,    label: Total reserve,    unit: GBP, additive: true}
+    dimensions:
+      review_id:       {column: review_id,       label: Review}
+      entity:          {column: entity,          label: Entity}
+      business_unit:   {column: business_unit,   label: Business Unit}
+      region:          {column: region,          label: Region}
+      finance_class:   {column: finance_class,   label: Finance Class}
+      reserving_class: {column: reserving_class, label: Reserving Class}
+      loss_type:       {column: loss_type,       label: Loss Type}
+      accident_year:   {column: accident_year,   label: Accident Year, ordered: true}
+    attributes: {}
+
+  claims_latest:
+    table: vw_claims_latest
+    label: Claims (latest diagonal)
+    description: Latest-diagonal claims view; the approved default for aggregate paid/incurred/count questions.
+    grain: [entity, business_unit, region, finance_class, reserving_class, loss_type, accident_year]
+    measures:
+      paid_claims:          {column: paid_claims,          label: Paid claims,           unit: GBP,   additive: true}
+      incurred_claims:      {column: incurred_claims,      label: Incurred claims,       unit: GBP,   additive: true}
+      reported_claim_count: {column: reported_claim_count, label: Reported claim count,  unit: count, additive: true}
+      paid_claim_count:     {column: paid_claim_count,     label: Paid claim count,      unit: count, additive: true}
+    dimensions:
+      review_id:       {column: review_id,       label: Review}
+      entity:          {column: entity,          label: Entity}
+      business_unit:   {column: business_unit,   label: Business Unit}
+      region:          {column: region,          label: Region}
+      finance_class:   {column: finance_class,   label: Finance Class}
+      reserving_class: {column: reserving_class, label: Reserving Class}
+      loss_type:       {column: loss_type,       label: Loss Type}
+      accident_year:   {column: accident_year,   label: Accident Year, ordered: true}
+    attributes: {}
+
+  claims_triangle:
+    table: claims_triangle
+    label: Claims triangle
+    description: Cumulative claims triangle cells; only for explicit development-period analysis.
+    grain: [entity, business_unit, region, finance_class, reserving_class, loss_type, accident_year, development_period_quarters]
+    measures:
+      paid_claims_cumulative:          {column: paid_claims_cumulative,          label: Cumulative paid claims,     unit: GBP,   additive: true}
+      incurred_claims_cumulative:      {column: incurred_claims_cumulative,      label: Cumulative incurred claims, unit: GBP,   additive: true}
+      reported_claim_count_cumulative: {column: reported_claim_count_cumulative, label: Cumulative reported count,  unit: count, additive: true}
+    dimensions:
+      review_id:       {column: review_id,       label: Review}
+      entity:          {column: entity,          label: Entity}
+      business_unit:   {column: business_unit,   label: Business Unit}
+      region:          {column: region,          label: Region}
+      finance_class:   {column: finance_class,   label: Finance Class}
+      reserving_class: {column: reserving_class, label: Reserving Class}
+      loss_type:       {column: loss_type,       label: Loss Type}
+      accident_year:   {column: accident_year,   label: Accident Year, ordered: true}
+      development_period_quarters: {column: development_period_quarters, label: Development Period (quarters), ordered: true}
+    attributes: {}
+
+  premium:
+    table: premium_data
+    label: Premium
+    description: Written and earned premium at Review x Entity x Business Unit x Region x Finance Class x Reserving Class x Accident Year. Loss Type is intentionally absent.
+    grain: [entity, business_unit, region, finance_class, reserving_class, accident_year]
+    measures:
+      written_premium: {column: written_premium, label: Written premium, unit: GBP, additive: true}
+      earned_premium:  {column: earned_premium,  label: Earned premium,  unit: GBP, additive: true}
+    dimensions:
+      review_id:       {column: review_id,       label: Review}
+      entity:          {column: entity,          label: Entity}
+      business_unit:   {column: business_unit,   label: Business Unit}
+      region:          {column: region,          label: Region}
+      finance_class:   {column: finance_class,   label: Finance Class}
+      reserving_class: {column: reserving_class, label: Reserving Class}
+      accident_year:   {column: accident_year,   label: Accident Year, ordered: true}
+    attributes: {}
+
+  assumptions:
+    table: assumption_snapshot
+    label: Assumptions
+    description: Assumption selections at Review x Entity x Reserving Class x Loss Type x Accident Year. Region, Finance Class and Business Unit do not exist at this grain.
+    grain: [entity, reserving_class, loss_type, accident_year]
+    measures:
+      management_adjustment: {column: management_adjustment, label: Management adjustment, unit: GBP,   additive: true}
+      selected_loss_ratio:   {column: selected_loss_ratio,   label: Selected loss ratio,   unit: ratio, additive: false}
+      inflation_assumption:  {column: inflation_assumption,  label: Inflation assumption,  unit: ratio, additive: false}
+      tail_factor:           {column: tail_factor,           label: Tail factor,           unit: factor, additive: false}
+    dimensions:
+      review_id:       {column: review_id,       label: Review}
+      entity:          {column: entity,          label: Entity}
+      reserving_class: {column: reserving_class, label: Reserving Class}
+      loss_type:       {column: loss_type,       label: Loss Type}
+      accident_year:   {column: accident_year,   label: Accident Year, ordered: true}
+    attributes:
+      projection_method:            {column: projection_method,            label: Projection Method}
+      selected_development_pattern: {column: selected_development_pattern, label: Development Pattern}
+      assumption_commentary:        {column: assumption_commentary,        label: Commentary}
+
+# Fields on which range operators (between / gte / lte) are permitted.
+ordered_fields: [accident_year, development_period_quarters]
+
+# Canonical dimension member values. The validator rejects filter values that
+# do not resolve (directly or via aliases) to one of these.
+dimension_values:
+  entity: [Demo Insurance UK, Demo Insurance Europe]
+  business_unit: [Retail, Commercial, Specialty]
+  region: [UK and Ireland, Continental Europe, International]
+  reserving_class: [Motor, Property, Casualty, Marine]
+  finance_class: [Personal Lines, Commercial Lines, Specialty Lines, Reinsurance]
+  loss_type: [Attritional, Large, Cat]
+  projection_method: [Chain Ladder, Bornhuetter-Ferguson, Expected Loss Ratio]
+
+# Approved joins (section 7.7). The compiler supports only these; nothing in
+# the plan schema can request any other join.
+joins:
+  assumptions_to_results:
+    left: assumptions
+    right: results
+    keys: [review_id, entity, reserving_class, loss_type, accident_year]
+    cardinality: one_to_many
+  premium_to_results:
+    left: premium
+    right: results
+    keys: [review_id, entity, business_unit, region, finance_class, reserving_class, accident_year]
+    cardinality: one_to_one
+    note: Results must first be aggregated across Loss Type to the premium grain.
+
+operations: [aggregate, compare, trend, rank, share_of_total, contribution_to_movement, list_changes, pivot]

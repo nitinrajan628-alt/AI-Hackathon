@@ -1,0 +1,133 @@
+# Guardrail categories, deterministic detection patterns, response templates
+# and permitted alternatives (Detailed Build Specification section 11 and
+# Appendix C). The AI planning call remains the authoritative classifier;
+# these patterns provide a deterministic backstop for obvious cases and the
+# response templates used for every blocked request.
+
+categories:
+  reserve_recommendation:
+    label: Reserve recommendation
+    patterns:
+      - "what reserve should"
+      - "should we (hold|book|strengthen|release|increase|reduce)"
+      - "recommend(ed)? (a )?reserve"
+      - "how much should we (hold|reserve|book)"
+    message: >
+      Determining or recommending an actuarial reserve requires actuarial
+      judgement and is outside the scope of this application. I can show the
+      current selected reserve, how it has changed, the assumptions recorded
+      for it and the relevant report commentary.
+    alternative: Show the selected reserve and its movement for the class in question.
+
+  adequacy_opinion:
+    label: Adequacy opinion
+    patterns:
+      - "adequate|adequacy"
+      - "sufficient (margin|reserves?)"
+      - "margin sufficient"
+      - "are (our|the) reserves (enough|right|correct)"
+      - "do you think .* (reserve|reserves)"
+    message: >
+      Reserve adequacy requires actuarial judgement. I can summarise what the
+      selected report says about adequacy or uncertainty and show the
+      supporting movements, assumptions and results.
+    alternative: Summarise the report's uncertainty commentary and show the reserve movement.
+
+  recalculation:
+    label: Recalculation
+    patterns:
+      - "recalculat|re-calculat|rerun|re-run"
+      - "recompute|re-compute"
+      - "(using|with|assume|at) \\d+(\\.\\d+)?% inflation"
+      - "change the (assumption|loss ratio|inflation|tail)"
+    message: >
+      Changing an actuarial assumption and recalculating reserves is outside
+      the scope of this application. I can compare the stored assumption with
+      previous quarters and show the associated selected results.
+    alternative: Compare stored inflation assumptions between quarters.
+
+  assumption_selection:
+    label: Assumption selection
+    patterns:
+      - "which (projection )?method should"
+      - "what (loss ratio|inflation|tail factor) should"
+      - "select (a|the) (method|assumption|pattern)"
+      - "recommend .* (method|assumption|loss ratio)"
+    message: >
+      Selecting or recommending projection methods or actuarial assumptions is
+      outside the scope of this application. I can list the assumptions
+      recorded in each review and show how they changed between periods.
+    alternative: List projection methods by class and how they changed since last quarter.
+
+  forecast:
+    label: Forecast or scenario
+    patterns:
+      - "what will (the )?reserves? be"
+      - "forecast|project forward|next quarter's reserve"
+      - "scenario (test|analysis)"
+      - "predict"
+    message: >
+      Forecasting future reserves or running scenarios is outside the scope of
+      this application. I can show how reserves have developed across the
+      stored review periods.
+    alternative: Show the eight-quarter total reserve trend.
+
+  arbitrary_code:
+    label: Unrestricted code or database access
+    patterns:
+      - "run (this|the|some) (sql|python|code|script|query)"
+      - "execute .*(sql|python|code)"
+      - "\\bselect\\b.+\\bfrom\\b"
+      - "drop table|delete from|insert into|update .+ set"
+      - "database credentials|connection string"
+    message: >
+      Running user-supplied SQL, Python or other code is not permitted. I can
+      run an approved aggregation, comparison, ranking or trend over the
+      stored review data instead.
+    alternative: Describe the breakdown you need and I will run an approved query.
+
+  external_information:
+    label: Unsupported external information
+    patterns:
+      - "market benchmark|industry benchmark"
+      - "competitor|peer group"
+      - "exchange rate|interest rate outlook"
+    message: >
+      External market data and benchmarking are not part of this review
+      library. I can answer from the stored reports, data, assumptions and
+      results for 2024 Q3 through 2026 Q2.
+    alternative: Ask about the stored review packs instead.
+
+standard_messages:
+  no_matching_rows: >
+    I did not find matching rows for the selected periods and filters.
+    {periods_and_filters} No figures have been inferred.
+  unsupported_granularity: >
+    {measure_label} is stored at Entity, Reserving Class, Loss Type and
+    Accident Year. It is not selected independently by {requested_dimension}.
+    I can show the available assumption view or show results by
+    {requested_dimension} separately.
+  connection_failed: >
+    The language-model provider could not be reached. A corporate proxy
+    or firewall may be blocking the connection. Contact IT to whitelist the
+    provider endpoint, or try a direct network connection. Nothing has been
+    lost.
+  model_failure: >
+    The language-model provider returned an unexpected error. The technical
+    details have been logged. Your message has been kept - please try again.
+  timeout: >
+    The language-model provider did not respond in time. This is usually
+    transient - please try again in a few seconds.
+  invalid_response: >
+    The language-model provider returned an uninterpretable response. Your
+    message has been kept - please try again or rephrase.
+  rate_limited: >
+    The language-model provider is currently rate-limiting requests. Please
+    wait a few seconds and ask again - nothing has been lost.
+  query_failure: >
+    The diagnostic could not be calculated. The technical details have been
+    logged. No figures have been inferred.
+  not_configured: >
+    The language-model provider is not configured. Set GEMINI_API_KEY (and
+    LLM_PROVIDER / LLM_MODEL) in your .env file, then restart the
+    application. Report browsing and saved diagnostics remain available.

@@ -1,0 +1,114 @@
+# Canonical aliases (Detailed Build Specification section 5.10).
+# The planner may use aliases; the validator resolves them to canonical
+# values before compilation and rejects anything that does not resolve.
+
+# Aliases for measure identifiers, keyed by lower-cased user/model term.
+measures:
+  reserves: total_reserve
+  reserve: total_reserve
+  total_reserves: total_reserve
+  total_reserve: total_reserve
+  booked_reserve: total_reserve
+  ibnr_reserve: ibnr
+  ibnr: ibnr
+  case_reserve: case_reserves
+  case_reserves: case_reserves
+  ultimate: ultimate_claims
+  ultimates: ultimate_claims
+  ultimate_claims: ultimate_claims
+  paid: paid_claims
+  paid_claims: paid_claims
+  incurred: incurred_claims
+  incurred_claims: incurred_claims
+  claim_count: reported_claim_count
+  claim_counts: reported_claim_count
+  reported_claims: reported_claim_count
+  premium: written_premium
+  written_premium: written_premium
+  earned_premium: earned_premium
+  loss_ratio: selected_loss_ratio
+  selected_loss_ratio: selected_loss_ratio
+  inflation: inflation_assumption
+  inflation_assumption: inflation_assumption
+  management_adjustment: management_adjustment
+  tail_factor: tail_factor
+
+# Aliases for dimension identifiers.
+dimensions:
+  class: reserving_class
+  classes: reserving_class
+  reserving_class: reserving_class
+  actuarial_class: reserving_class
+  line_of_business: reserving_class
+  finance_class: finance_class
+  financial_class: finance_class
+  region: region
+  geography: region
+  business_unit: business_unit
+  bu: business_unit
+  entity: entity
+  legal_entity: entity
+  loss_type: loss_type
+  accident_year: accident_year
+  ay: accident_year
+  origin_year: accident_year
+  year_of_account: accident_year
+  development_period: development_period_quarters
+  development_period_quarters: development_period_quarters
+  dev_period: development_period_quarters
+  review: review_id
+  review_id: review_id
+  quarter: review_id
+  projection_method: projection_method
+  method: projection_method
+
+# Aliases for dimension member values, keyed by dimension then lower-cased term.
+values:
+  reserving_class:
+    motor: Motor
+    property: Property
+    casualty: Casualty
+    marine: Marine
+    liability: Casualty
+  finance_class:
+    personal: Personal Lines
+    personal lines: Personal Lines
+    commercial: Commercial Lines
+    commercial lines: Commercial Lines
+    specialty: Specialty Lines
+    specialty lines: Specialty Lines
+    reinsurance: Reinsurance
+    ri: Reinsurance
+  loss_type:
+    attritional: Attritional
+    attrition: Attritional
+    large: Large
+    large losses: Large
+    large loss: Large
+    cat: Cat
+    catastrophe: Cat
+    catastrophes: Cat
+  entity:
+    uk: Demo Insurance UK
+    demo insurance uk: Demo Insurance UK
+    europe: Demo Insurance Europe
+    demo insurance europe: Demo Insurance Europe
+  business_unit:
+    retail: Retail
+    commercial: Commercial
+    specialty: Specialty
+  region:
+    uk and ireland: UK and Ireland
+    uk & ireland: UK and Ireland
+    "uk&i": UK and Ireland
+    continental europe: Continental Europe
+    europe: Continental Europe
+    international: International
+  projection_method:
+    chain ladder: Chain Ladder
+    cl: Chain Ladder
+    bornhuetter-ferguson: Bornhuetter-Ferguson
+    bornhuetter ferguson: Bornhuetter-Ferguson
+    bf: Bornhuetter-Ferguson
+    expected loss ratio: Expected Loss Ratio
+    elr: Expected Loss Ratio
