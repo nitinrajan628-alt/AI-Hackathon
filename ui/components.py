@@ -147,7 +147,8 @@ def render_result_table(df: pd.DataFrame, dataset: str, unit: str,
         f"</table></div>", unsafe_allow_html=True)
 
     table_key = f"dl_table_{uuid.uuid4().hex[:8]}"
-    _download_table_csv(df, key=table_key, filename="table_export")
+    with st.container(key=f"{table_key}_rowend"):
+        _download_table_csv(df, key=table_key, filename="table_export")
 
 
 def evidence_badges(result) -> str:
@@ -225,16 +226,17 @@ def render_answer_card(result, key_prefix: str) -> None:
         limits_html = "".join(f"<div class='rr-limit'>{_esc(l)}</div>"
                               for l in draft.limitations[:3])
 
-    st.markdown(
-        f"<div class='rr-card'>"
-        f"<div class='rr-headline'>{_esc(headline)}</div>"
-        f"<div class='rr-meta'>{meta}</div>"
-        f"{evidence_badges(result)}"
-        f"{obs_html}{sections_html}{limits_html}"
-        f"</div>", unsafe_allow_html=True)
+    with st.container(key=f"{key_prefix}_answercard"):
+        st.markdown(
+            f"<div class='rr-card'>"
+            f"<div class='rr-headline'>{_esc(headline)}</div>"
+            f"<div class='rr-meta'>{meta}</div>"
+            f"{evidence_badges(result)}"
+            f"{obs_html}{sections_html}{limits_html}"
+            f"</div>", unsafe_allow_html=True)
 
-    answer_md = _build_answer_markdown(result)
-    _copy_button(answer_md, key=f"{key_prefix}_copy_answer", label="Copy text")
+        answer_md = _build_answer_markdown(result)
+        _copy_button(answer_md, key=f"{key_prefix}_copy_answer")
 
     outputs = result.query_outputs
     titles = getattr(result, "analysis_titles", None) or []
@@ -284,7 +286,8 @@ def render_answer_card(result, key_prefix: str) -> None:
                     st.switch_page("pages/report.py")
 
     if result.diagnostic_id:
-        _render_save_artifact_button(result, key_prefix)
+        with st.container(key=f"{key_prefix}_artifactrow"):
+            _render_save_artifact_button(result, key_prefix)
 
 
 def _render_save_artifact_button(result, key_prefix: str) -> None:

@@ -343,6 +343,14 @@ def inject_css() -> None:
         box-shadow: none; font-size: 0.86rem; padding: 0.3rem 0.8rem;
         font-weight: var(--w-medium);
     }}
+
+    /* Table CSV download and Save-as-artifact buttons sit right-aligned
+       under their content instead of the default left edge. Streamlit's
+       vertical block containers default to flex-direction: column, so
+       horizontal placement is controlled by align-items, not justify-content. */
+    div[class*="_rowend"], div[class*="_artifactrow"] {{
+        align-items: flex-end;
+    }}
     .stButton > button:hover {{
         border-color: var(--accent); color: var(--accent); background: var(--raised);
     }}
@@ -484,6 +492,25 @@ def inject_css() -> None:
     }}
     .rr-limit {{ font-size: 0.8rem; color: var(--muted); font-style: italic;
                  margin-top: 0.4rem; }}
+
+    /* ---- Answer card copy button: top-right overlay, hidden until hover -- */
+    div[class*="_answercard"] {{ position: relative; }}
+    div[class*="_answercard"] .rr-card {{ padding-right: 2.6rem; }}
+    div[class*="_answercard"] [class*="_copy_answer"] {{
+        position: absolute; top: 0.6rem; right: 0.65rem; z-index: 2;
+        opacity: 0; transition: opacity 0.15s; margin: 0;
+    }}
+    div[class*="_answercard"]:hover [class*="_copy_answer"] {{ opacity: 1; }}
+    div[class*="_answercard"] [class*="_copy_answer"] button {{
+        padding: 0.2rem 0.55rem !important; min-height: 0 !important;
+        font-size: 0.72rem !important; border: 1px solid var(--hairline) !important;
+        background: var(--surface) !important; color: var(--muted) !important;
+        border-radius: 5px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }}
+    div[class*="_answercard"] [class*="_copy_answer"] button:hover {{
+        color: var(--accent) !important; background: var(--accent-soft) !important;
+        transform: none !important;
+    }}
 
     .rr-analysis-section {{
         margin-top: 0.85rem; padding-top: 0.65rem;
