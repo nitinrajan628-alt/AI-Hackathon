@@ -108,6 +108,9 @@ class AnalysisSection(BaseModel):
 class AnswerDraft(BaseModel):
     model_config = ConfigDict(extra="forbid")
     headline: str
+    # Short title for the primary chart (measure + grouping dimension, e.g.
+    # "Paid Claims by Accident Year"); empty when no chart is shown.
+    chart_title: str = ""
     observations: list[str] = Field(default_factory=list)
     # Populated only for deep-dive analyses; ordinary answers leave it empty.
     sections: list[AnalysisSection] = Field(default_factory=list)

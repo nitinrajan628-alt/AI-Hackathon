@@ -512,6 +512,28 @@ def inject_css() -> None:
         transform: none !important;
     }}
 
+    /* ---- Chart download button: top-right overlay, hidden until hover ---- */
+    div[class*="_chartbox_"] {{ position: relative; margin-bottom: 0.5rem; }}
+    .rr-chart-title {{
+        font-size: 0.86rem; font-weight: var(--w-strong); color: var(--ink2);
+        margin-bottom: 0.35rem; padding-right: 2.6rem;
+    }}
+    div[class*="_chartbox_"] [class*="_dlchart_"] {{
+        position: absolute; top: 0.1rem; right: 0.1rem; z-index: 2;
+        opacity: 0; transition: opacity 0.15s; margin: 0;
+    }}
+    div[class*="_chartbox_"]:hover [class*="_dlchart_"] {{ opacity: 1; }}
+    div[class*="_chartbox_"] [class*="_dlchart_"] button {{
+        padding: 0.2rem 0.55rem !important; min-height: 0 !important;
+        font-size: 0.72rem !important; border: 1px solid var(--hairline) !important;
+        background: var(--surface) !important; color: var(--muted) !important;
+        border-radius: 5px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }}
+    div[class*="_chartbox_"] [class*="_dlchart_"] button:hover {{
+        color: var(--accent) !important; background: var(--accent-soft) !important;
+        transform: none !important;
+    }}
+
     .rr-analysis-section {{
         margin-top: 0.85rem; padding-top: 0.65rem;
         border-top: 1px solid var(--hairline);

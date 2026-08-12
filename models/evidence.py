@@ -93,6 +93,7 @@ class ChartSpec(BaseModel):
     ]
     title: str = ""
     x_field: str
+    x_label: str = ""
     y_fields: list[str]
     y_label: str = ""
     unit: str = ""

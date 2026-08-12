@@ -339,7 +339,8 @@ def verify_answer(draft: AnswerDraft, package: EvidencePackage) -> VerificationR
             failures.append(f"Unknown evidence reference '{ref.evidence_id}'.")
 
     allowed = _allowed_numbers(package)
-    texts = [draft.headline] + list(draft.observations) + list(draft.limitations)
+    texts = ([draft.headline, draft.chart_title] + list(draft.observations)
+             + list(draft.limitations))
     for section in draft.sections:
         texts.append(section.title)
         texts += list(section.points)

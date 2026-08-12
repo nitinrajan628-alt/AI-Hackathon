@@ -6,6 +6,7 @@ import html
 import io
 import json
 import math
+import re
 import uuid
 
 import pandas as pd
@@ -52,6 +53,11 @@ def _download_chart_png(fig, key: str, filename: str = "chart") -> None:
             key=key, use_container_width=False)
     except Exception:
         pass
+
+
+def _chart_filename(title: str, fallback: str = "chart_export") -> str:
+    slug = re.sub(r"[^a-z0-9]+", "_", title.lower()).strip("_")
+    return slug or fallback
 
 
 def _esc(v) -> str:
@@ -246,11 +252,18 @@ def render_answer_card(result, key_prefix: str) -> None:
         er = output.engine_result
         if output.chart_spec is not None:
             fig = build_figure(output.chart_spec, current_theme())
-            st.plotly_chart(fig, width="stretch",
-                            key=f"{key_prefix}_chart_{i}",
-                            config={"displayModeBar": False})
-            _download_chart_png(fig, key=f"{key_prefix}_dlchart_{i}",
-                                filename="chart_export")
+            with st.container(key=f"{key_prefix}_chartbox_{i}"):
+                if output.chart_spec.title:
+                    st.markdown(
+                        f"<div class='rr-chart-title'>"
+                        f"{_esc(output.chart_spec.title)}</div>",
+                        unsafe_allow_html=True)
+                st.plotly_chart(fig, width="stretch",
+                                key=f"{key_prefix}_chart_{i}",
+                                config={"displayModeBar": False})
+                _download_chart_png(
+                    fig, key=f"{key_prefix}_dlchart_{i}",
+                    filename=_chart_filename(output.chart_spec.title))
         render_result_table(er.shaped.df, er.validated.dataset,
                             er.shaped.unit, er.shaped.period_labels,
                             er.validated.plan.measures)

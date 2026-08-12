@@ -341,9 +341,10 @@ def handle_question(question: str, session_id: str, context: ConversationContext
         analysis = run_analysis(question, context.current_review_id,
                                 inherited_filters=context.active_filters)
         for title, er in analysis.as_pairs():
-            outputs.append(QueryOutput(
-                engine_result=er,
-                chart_spec=build_chart_spec(er.shaped, er.validated.plan.chart)))
+            chart_spec = build_chart_spec(er.shaped, er.validated.plan.chart)
+            if chart_spec is not None:
+                chart_spec.title = title
+            outputs.append(QueryOutput(engine_result=er, chart_spec=chart_spec))
             analysis_titles.append(title)
         warnings.extend(analysis.notes)
         for skipped in analysis.skipped:
@@ -441,6 +442,13 @@ def handle_question(question: str, session_id: str, context: ConversationContext
                                      error_category=type(exc).__name__)
         draft = fallback_answer(package)
         used_fallback = True
+
+    # A deep-dive battery keeps its own deterministic, per-diagnostic titles.
+    # A single answer gets the LLM's chart_title in place of the deterministic
+    # default, since the model can name the chart more naturally.
+    if not analysis_titles and outputs and outputs[0].chart_spec is not None \
+            and draft.chart_title.strip():
+        outputs[0].chart_spec.title = draft.chart_title.strip()
 
     # 10. Context updates and persistence ----------------------------------
     apply_updates(context, response.context_updates)

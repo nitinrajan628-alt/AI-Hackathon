@@ -14,10 +14,17 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from models.evidence import ChartSpec
+from services.catalogue import get_catalogue
 from services.diagnostics import ShapedResult
 from services.formatting import display_unit, fmt_year, is_integer_field
 
 MAX_CHART_CATEGORIES = 25
+
+CHART_TITLE_OPERATION_LABELS = {
+    "compare": "Movement", "trend": "Trend", "rank": "Ranking",
+    "share_of_total": "Share of Total",
+    "contribution_to_movement": "Contribution to Movement",
+}
 
 PALETTES = {
     "light": {
@@ -95,6 +102,35 @@ def choose_chart(result: ShapedResult, requested: str) -> str | None:
     return auto
 
 
+def default_chart_title(dataset: str, measures: list[str], group_by: list[str],
+                        operation: str) -> str:
+    """Deterministic fallback title naming the measure and grouping dimension.
+
+    Used whenever the AI-drafted title is unavailable (fallback answer,
+    drafting error, or a chart from a non-primary query plan).
+    """
+    cat = get_catalogue()
+    measure = cat.measure_label(dataset, measures[0]) if measures else "Result"
+    parts = [measure]
+    op_label = CHART_TITLE_OPERATION_LABELS.get(operation)
+    if op_label:
+        parts.append(op_label)
+    if group_by:
+        parts.append("by " + ", ".join(cat.dimension_label(dataset, g)
+                                       for g in group_by[:2]))
+    return " ".join(parts)
+
+
+def default_axis_label(dataset: str, field: str) -> str:
+    """Deterministic axis title naming the dimension or field being plotted."""
+    if field == "review":
+        return "Review Period"
+    cat = get_catalogue()
+    if field in cat.dimensions(dataset) or field in cat.attributes(dataset):
+        return cat.dimension_label(dataset, field)
+    return field.replace("_", " ").title()
+
+
 def build_chart_spec(result: ShapedResult, requested: str) -> ChartSpec | None:
     chart_type = choose_chart(result, requested)
     if chart_type is None:
@@ -135,12 +171,15 @@ def build_chart_spec(result: ShapedResult, requested: str) -> ChartSpec | None:
     keep = [c for c in dict.fromkeys(
         [x_field] + result.group_by[1:2] + y_fields) if c in df.columns]
     data = df[keep].to_dict(orient="records")
+    cat = get_catalogue()
     return ChartSpec(
         chart_type=chart_type,
-        title="",
+        title=default_chart_title(result.dataset, result.measures,
+                                  result.group_by, result.operation),
         x_field=x_field,
+        x_label=default_axis_label(result.dataset, x_field),
         y_fields=y_fields,
-        y_label=display_unit(unit),
+        y_label=cat.measure_label(result.dataset, m) if m else "",
         unit=unit,
         data=data,
         series_field=result.group_by[1] if (chart_type in ("line", "stacked_bar")
@@ -159,7 +198,7 @@ def _scale(values: list[float]) -> tuple[list[float], str]:
     return [None if v is None else v / 1e6 for v in values], "GBP m"
 
 
-def _layout(fig: go.Figure, pal: dict, y_label: str):
+def _layout(fig: go.Figure, pal: dict, y_title: str, x_title: str = ""):
     fig.update_layout(
         template=None,
         paper_bgcolor=pal["surface"], plot_bgcolor=pal["surface"],
@@ -174,12 +213,13 @@ def _layout(fig: go.Figure, pal: dict, y_label: str):
     )
     fig.update_xaxes(showgrid=False, linecolor=pal["baseline"], linewidth=1,
                      tickfont=dict(color=pal["muted"]), zeroline=False,
+                     title=dict(text=x_title, font=dict(size=12, color=pal["muted"])),
                      automargin=True)
     fig.update_yaxes(showgrid=True, gridcolor=pal["grid"], gridwidth=1,
                      linecolor="rgba(0,0,0,0)",
                      tickfont=dict(color=pal["muted"]),
                      zeroline=True, zerolinecolor=pal["baseline"], zerolinewidth=1,
-                     title=dict(text=y_label, font=dict(size=12, color=pal["muted"])),
+                     title=dict(text=y_title, font=dict(size=12, color=pal["muted"])),
                      tickformat=",.0f", automargin=True)
     return fig
 
@@ -199,7 +239,8 @@ def build_figure(spec: ChartSpec, theme: str = "light") -> go.Figure:
         vals = [row.get(field) for row in data]
         return [None if v is None else (v / 1e6 if is_gbp else v) for v in vals]
 
-    y_label = "GBP m" if is_gbp else display_unit(spec.unit)
+    unit_label = "GBP m" if is_gbp else display_unit(spec.unit)
+    y_label = f"{spec.y_label} ({unit_label})" if spec.y_label else unit_label
 
     if spec.chart_type == "line":
         series_field = getattr(spec, "series_field", None)
@@ -232,7 +273,8 @@ def build_figure(spec: ChartSpec, theme: str = "light") -> go.Figure:
             textposition="outside",
             textfont=dict(size=12, color=pal["ink2"]),
             cliponaxis=False, showlegend=False))
-        fig.update_yaxes(title_text=f"Movement ({y_label})")
+        y_label = (f"{spec.y_label} Movement ({unit_label})" if spec.y_label
+                   else f"Movement ({unit_label})")
 
     elif spec.chart_type == "grouped_bar" and spec.y_fields == ["current", "prior"]:
         labels = spec.period_labels or ["Current", "Prior"]
@@ -279,7 +321,7 @@ def build_figure(spec: ChartSpec, theme: str = "light") -> go.Figure:
         if len(spec.y_fields) > 1:
             fig.update_layout(barmode="group")
 
-    return _layout(fig, pal, y_label)
+    return _layout(fig, pal, y_label, spec.x_label)
 
 
 def build_report_figure(block: dict, theme: str = "light") -> go.Figure | None:
