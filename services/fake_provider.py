@@ -92,6 +92,13 @@ class FakeProvider:
         prior = reviews[idx - 1] if idx > 0 else None
         prior_year = reviews[idx - 4] if idx >= 4 else None
 
+        if re.search(r"^(hello|hi|hey|test|ping)\b|is this working|are you there|"
+                     r"how does this .* work|what can you (do|answer|help)|"
+                     r"how was .* (generated|calculated|produced)|explain .* result|"
+                     r"where did .* come from|how do you work", q):
+            return PlanningResponse(
+                intent="META", policy={"status": "ALLOW"})
+
         for category, pattern in BLOCK_RULES:
             if re.search(pattern, q):
                 return PlanningResponse(
@@ -232,7 +239,22 @@ class FakeProvider:
     # -------------------------------------------------------------- answers
 
     def _answer(self, payload: dict) -> AnswerDraft:
+        question = payload.get("question", "").lower()
         evidence = payload.get("evidence", {})
+
+        if not evidence.get("query_results") and not evidence.get("report_slides"):
+            return AnswerDraft(
+                headline=(
+                    "The tool is working. You can ask questions about the "
+                    "stored reserve reviews (2024 Q3 to 2026 Q2) — report "
+                    "content, claims, premium, assumptions, results, "
+                    "movements, trends and comparisons."),
+                observations=[
+                    "Try asking 'What are the key messages from this quarter's reserve review?'",
+                    "Or 'How much did reserves change from last quarter?'",
+                ],
+                limitations=[], evidence_references=[])
+
         period = payload.get("period_context", {}).get("display_label", "")
         observations: list[str] = []
         refs: list[EvidenceReference] = []

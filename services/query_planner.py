@@ -18,6 +18,7 @@ SCOPE_POLICY = {
     "allowed": [
         "report retrieval", "filtering", "aggregation", "comparison",
         "ranking", "approved assumption change listing", "trend",
+        "meta question",
     ],
     "prohibited": [
         "reserve recalculation", "reserve adequacy opinion",

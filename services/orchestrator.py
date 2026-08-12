@@ -124,6 +124,58 @@ def _result_json(outputs: list[QueryOutput]) -> dict | None:
     }
 
 
+_META_SYSTEM = (
+    "You are the conversational assistant for an actuarial reserve review "
+    "application. The user has asked a meta question — a greeting, a test "
+    "message, a question about what the tool can do, or a question about how "
+    "a previous result was generated.\n\n"
+    "Return a JSON object matching the response schema exactly: headline, "
+    "observations, limitations, evidence_references.\n\n"
+    "Put your main response in the headline (one or two friendly sentences "
+    "in clear British English). Put any additional detail in observations "
+    "(up to three short bullets). Leave limitations and evidence_references "
+    "as empty lists.\n\n"
+    "If the user is testing or greeting: confirm the tool is working and "
+    "briefly say what it can help with.\n\n"
+    "If the user asks what the tool does or can answer: it lets users explore "
+    "a library of eight quarterly reserve reviews (2024 Q3 to 2026 Q2) — "
+    "report commentary, claims, premium, assumptions and selected results. "
+    "It can aggregate, compare between periods, show trends, rank, list "
+    "assumption changes, and search the report packs. It cannot make "
+    "actuarial judgements, recommend reserves or run arbitrary code.\n\n"
+    "If the user asks how a result was generated: every number comes from a "
+    "deterministic query engine that validates the question against an "
+    "approved data catalogue, compiles parameterised SQL, executes it "
+    "read-only against a SQLite database, and verifies every figure in the "
+    "answer is traceable to the evidence. The AI interprets the question and "
+    "drafts the narrative; it never invents numbers."
+)
+
+
+def _meta_answer(question: str, settings, provider) -> str:
+    from services.llm_provider import get_llm_provider
+    from models.ai_contracts import AnswerDraft
+    settings = settings or get_llm_settings()
+    provider = provider or get_llm_provider(settings)
+    try:
+        from services.llm_provider import call_with_retries
+        outcome = call_with_retries(
+            provider, purpose="meta_answer",
+            system_instruction=_META_SYSTEM,
+            input_payload={"question": question},
+            response_model=AnswerDraft,
+            settings=settings)
+        draft = outcome.response.value
+        return draft.headline + (
+            ("\n\n" + "\n".join(f"- {o}" for o in draft.observations))
+            if draft.observations else "")
+    except Exception:
+        return (
+            "The tool is working. You can ask questions about the stored "
+            "reserve reviews (2024 Q3 to 2026 Q2) — report content, claims, "
+            "premium, assumptions, results, movements, trends and comparisons.")
+
+
 def handle_question(question: str, session_id: str, context: ConversationContext,
                     settings=None, provider=None,
                     deep_analysis: bool | None = None) -> OrchestratorResult:
@@ -259,6 +311,14 @@ def handle_question(question: str, session_id: str, context: ConversationContext
                          "information needed to answer that. It covers report "
                          "content, claims, premium, assumptions and selected "
                          "results for 2024 Q3 to 2026 Q2."),
+            period_label=quarter_label(context.current_review_id)))
+
+    # 3b. Meta questions (greetings, tool-help, provenance) ----------------
+    if response.intent == "META":
+        meta_text = _meta_answer(question, settings, provider)
+        return finalize(OrchestratorResult(
+            status="SUCCESS", intent="META",
+            answer_text=meta_text,
             period_label=quarter_label(context.current_review_id)))
 
     # 4. Execute approved report searches and validated query plans --------

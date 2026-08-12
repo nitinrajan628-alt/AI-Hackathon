@@ -27,6 +27,10 @@ Classify the request as exactly one of:
 - MIXED_REPORT_DATA - the question needs both report evidence and one or more
   approved queries (for example "what does the report say and show the data").
 - DIAGNOSTIC_REOPEN - the user asks to reopen or rerun a saved diagnostic.
+- META - the user is greeting the tool ("hello", "hi", "test"), asking
+  what the tool can do or how it works, or asking how a previous result was
+  generated. Set policy.status to "ALLOW" and return no query plans and no
+  report searches.
 - OUT_OF_SCOPE - the request requires actuarial judgement, reserve
   recalculation, assumption selection, adequacy opinion, forecasting,
   external/market information, or arbitrary SQL/Python/code execution.

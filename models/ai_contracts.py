@@ -80,7 +80,7 @@ class PlanningResponse(BaseModel):
     intent: Literal[
         "REPORT_QA", "STRUCTURED_QUERY", "PERIOD_COMPARISON", "TREND",
         "ASSUMPTION_CHANGES", "MIXED_REPORT_DATA", "DIAGNOSTIC_REOPEN",
-        "OUT_OF_SCOPE", "UNSUPPORTED",
+        "OUT_OF_SCOPE", "UNSUPPORTED", "META",
     ]
     report_searches: list[ReportSearchRequest] = Field(default_factory=list)
     query_plans: list[QueryPlan] = Field(default_factory=list)

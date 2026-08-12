@@ -231,6 +231,8 @@ with chat_col:
                     st.markdown(msg["content"])
                     if result.guardrail_category:
                         st.caption(f"Out of scope · {result.guardrail_category.replace('_', ' ')}")
+                elif result.intent == "META":
+                    st.markdown(msg["content"])
                 else:
                     render_answer_card(result, key_prefix=f"msg{i}")
                     last_result = result
