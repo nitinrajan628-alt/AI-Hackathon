@@ -127,3 +127,85 @@ def seed_demo_sessions() -> tuple[list[dict], list[dict]]:
         status.update(label="Demo ready", state="complete")
 
     return sessions, artifacts
+
+
+def seed_demo_sessions_headless() -> tuple[list[dict], list[dict]]:
+    """Same as seed_demo_sessions but without Streamlit UI calls.
+
+    Suitable for running in a background thread where st.status() is
+    unavailable.
+    """
+    settings = get_llm_settings()
+    sessions: list[dict] = []
+    artifacts: list[dict] = []
+
+    for chat_index, questions in enumerate(DEMO_CHATS):
+        session = {
+            "id": str(uuid.uuid4()),
+            "title": "New chat",
+            "messages": [],
+            "context": ConversationContext(
+                current_review_id=default_review_id()
+            ),
+            "created_at": str(uuid.uuid4())[:8],
+        }
+
+        for q_index, question in enumerate(questions):
+            try:
+                result = handle_question(
+                    question,
+                    session["id"],
+                    session["context"],
+                    settings=settings,
+                )
+            except Exception:
+                log.exception("Background seed failed for %r", question)
+                continue
+
+            session["messages"].append(
+                {"role": "user", "content": question, "result": None}
+            )
+            session["messages"].append(
+                {"role": "assistant", "content": result.answer_text,
+                 "result": result}
+            )
+
+            if session["title"] == "New chat":
+                headline = (
+                    result.draft.headline
+                    if result.draft
+                    else result.answer_text.splitlines()[0][:60]
+                )
+                try:
+                    session["title"] = generate_chat_title(
+                        question, headline
+                    )
+                except Exception:
+                    session["title"] = question[:50]
+
+            if (chat_index == ARTIFACT_CHAT_INDEX
+                    and q_index == len(questions) + ARTIFACT_QUESTION_INDEX):
+                headline = (
+                    result.draft.headline
+                    if result.draft
+                    else result.answer_text.splitlines()[0][:60]
+                )
+                try:
+                    title = generate_artifact_title(question, headline)
+                except Exception:
+                    title = question[:50]
+                artifacts.append({
+                    "id": str(uuid.uuid4()),
+                    "diagnostic_id": result.diagnostic_id,
+                    "title": title,
+                    "source_session_id": session["id"],
+                    "source_question": question,
+                    "result": result,
+                    "created_at": str(uuid.uuid4())[:8],
+                })
+
+        sessions.append(session)
+
+    log.info("Background demo seed complete: %d sessions, %d artifacts",
+             len(sessions), len(artifacts))
+    return sessions, artifacts
