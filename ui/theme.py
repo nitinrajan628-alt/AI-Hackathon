@@ -323,7 +323,7 @@ def inject_css() -> None:
     [data-testid="stHeader"] {{ background: transparent; }}
     [data-testid="stSidebar"] {{
         background: var(--sidebar-bg); border-right: 1px solid var(--hairline);
-        min-width: 340px; width: 360px;
+        min-width: 380px; width: 400px;
     }}
     [data-testid="stSidebar"] * {{ color: var(--ink); }}
     .block-container {{ padding-top: 1.4rem; max-width: 100%; }}
