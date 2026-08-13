@@ -34,9 +34,17 @@ def _new_session() -> dict:
 def _init_state() -> None:
     ss = st.session_state
     if "chat_sessions" not in ss:
-        first = _new_session()
-        ss.chat_sessions = [first]
-        ss.active_session_id = first["id"]
+        try:
+            from services.demo_seed import seed_demo_sessions
+            sessions, artifacts = seed_demo_sessions()
+            ss.chat_sessions = sessions
+            ss.artifacts = artifacts
+            ss.active_session_id = sessions[0]["id"]
+        except Exception:
+            first = _new_session()
+            ss.chat_sessions = [first]
+            ss.active_session_id = first["id"]
+            ss.artifacts = []
     if ss.get("theme") not in THEMES:
         ss.theme = "light"
     if "show_evidence" not in ss:
