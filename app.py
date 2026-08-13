@@ -66,10 +66,29 @@ _VIDEO_END_JS = """
         var v = window.parent.document.querySelector('video');
         if (!v) return;
         clearInterval(poll);
+
+        // Browsers only allow autoplay-with-sound after a real user gesture -
+        // unmuting programmatically without one can cause the browser to
+        // pause the video outright, not just play it silently. So the video
+        // stays muted (guaranteed to autoplay) until the visitor's first
+        // interaction with the page, which is a genuine gesture; re-calling
+        // play() in the same handler resumes it if the browser paused it
+        // when the mute state changed.
+        var doc = window.parent.document;
+        var unmuteOnGesture = function() {
+            v.muted = false;
+            v.play().catch(function() {});
+            doc.removeEventListener("click", unmuteOnGesture);
+            doc.removeEventListener("keydown", unmuteOnGesture);
+            doc.removeEventListener("touchstart", unmuteOnGesture);
+        };
+        doc.addEventListener("click", unmuteOnGesture);
+        doc.addEventListener("keydown", unmuteOnGesture);
+        doc.addEventListener("touchstart", unmuteOnGesture);
+
         v.addEventListener('ended', function() {
             // Click the hidden skip-trigger button in the Streamlit DOM
-            var el = window.parent.document.querySelector(
-                '[data-testid="stButton"] button');
+            var el = doc.querySelector('[data-testid="stButton"] button');
             if (el) el.click();
         });
     }, 300);
@@ -171,7 +190,7 @@ def _render_intro() -> None:
     """Render the full-screen intro video overlay and stop the app."""
     st.markdown(_INTRO_CSS, unsafe_allow_html=True)
 
-    st.video("static/intro.mp4", autoplay=True, muted=False)
+    st.video("static/intro.mp4", autoplay=True, muted=True)
 
     if st.button("SKIP INTRO  \u25B6\u25B6", key="_intro_skip"):
         st.session_state.intro_complete = True
