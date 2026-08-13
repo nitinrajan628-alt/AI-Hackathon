@@ -61,30 +61,27 @@ _VIDEO_END_JS = """
 <script>
 (function() {
     // Poll until the video element appears in the parent document, then
-    // listen for 'ended' to auto-advance past the intro.
+    // wire up the center play button and the auto-advance-on-end listener.
     var poll = setInterval(function() {
         var v = window.parent.document.querySelector('video');
         if (!v) return;
         clearInterval(poll);
-
-        // Browsers only allow autoplay-with-sound after a real user gesture -
-        // unmuting programmatically without one can cause the browser to
-        // pause the video outright, not just play it silently. So the video
-        // stays muted (guaranteed to autoplay) until the visitor's first
-        // interaction with the page, which is a genuine gesture; re-calling
-        // play() in the same handler resumes it if the browser paused it
-        // when the mute state changed.
         var doc = window.parent.document;
-        var unmuteOnGesture = function() {
+
+        var playBtn = doc.createElement("button");
+        playBtn.type = "button";
+        playBtn.setAttribute("aria-label", "Play intro video with sound");
+        playBtn.className = "rr-intro-play-btn";
+        playBtn.innerHTML = "\u25B6";
+        doc.body.appendChild(playBtn);
+
+        // Playing only starts here, from a real click, so unmuted playback
+        // is always allowed - no autoplay policy workaround needed.
+        playBtn.addEventListener("click", function() {
             v.muted = false;
             v.play().catch(function() {});
-            doc.removeEventListener("click", unmuteOnGesture);
-            doc.removeEventListener("keydown", unmuteOnGesture);
-            doc.removeEventListener("touchstart", unmuteOnGesture);
-        };
-        doc.addEventListener("click", unmuteOnGesture);
-        doc.addEventListener("keydown", unmuteOnGesture);
-        doc.addEventListener("touchstart", unmuteOnGesture);
+            playBtn.remove();
+        });
 
         v.addEventListener('ended', function() {
             // Click the hidden skip-trigger button in the Streamlit DOM
@@ -128,7 +125,38 @@ _INTRO_CSS = """
     z-index: 999999 !important;
     width: auto !important;
     opacity: 0;
-    animation: introFadeIn 0.8s ease-out 3s forwards;
+    animation: introFadeIn 0.8s ease-out 0.3s forwards;
+}
+
+/* Center play button - playback (and unmuted sound) only starts once the
+   visitor clicks this, so there is a genuine gesture and no autoplay policy
+   to work around. */
+.rr-intro-play-btn {
+    position: fixed !important;
+    top: 50% !important; left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 999999 !important;
+    width: 110px !important; height: 110px !important;
+    border-radius: 50% !important;
+    background: rgba(0, 0, 0, 0.55) !important;
+    border: 2px solid rgba(255, 232, 31, 0.75) !important;
+    color: #FFE81F !important;
+    font-size: 2.2rem !important;
+    line-height: 1 !important;
+    padding-left: 10px !important;
+    cursor: pointer !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    text-shadow: 0 0 12px rgba(255, 232, 31, 0.6) !important;
+    box-shadow: 0 0 24px rgba(255, 232, 31, 0.25) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    animation: introFadeIn 0.8s ease-out 0.3s forwards;
+}
+.rr-intro-play-btn:hover {
+    transform: translate(-50%, -50%) scale(1.08) !important;
+    box-shadow: 0 0 32px rgba(255, 232, 31, 0.45) !important;
+}
+@media (max-width: 640px) {
+    .rr-intro-play-btn { width: 84px !important; height: 84px !important; font-size: 1.7rem !important; }
 }
 [data-testid="stButton"] button {
     position: relative !important;
@@ -190,7 +218,7 @@ def _render_intro() -> None:
     """Render the full-screen intro video overlay and stop the app."""
     st.markdown(_INTRO_CSS, unsafe_allow_html=True)
 
-    st.video("static/intro.mp4", autoplay=True, muted=True)
+    st.video("static/intro.mp4", autoplay=False, muted=True)
 
     if st.button("SKIP INTRO  \u25B6\u25B6", key="_intro_skip"):
         st.session_state.intro_complete = True
