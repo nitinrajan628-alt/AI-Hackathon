@@ -57,110 +57,114 @@ def _start_background_seed() -> dict:
 # Intro video overlay
 # ---------------------------------------------------------------------------
 
-_INTRO_HTML = """
+_VIDEO_END_JS = """
+<script>
+(function() {
+    // Poll until the video element appears in the parent document, then
+    // listen for 'ended' to auto-advance past the intro.
+    var poll = setInterval(function() {
+        var v = window.parent.document.querySelector('video');
+        if (!v) return;
+        clearInterval(poll);
+        v.addEventListener('ended', function() {
+            // Click the hidden skip-trigger button in the Streamlit DOM
+            var el = window.parent.document.querySelector(
+                '[data-testid="stButton"] button');
+            if (el) el.click();
+        });
+    }, 300);
+})();
+</script>
+"""
+
+_INTRO_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%%; height: 100%%; overflow: hidden; background: #000; }
-
-.intro-wrap {
-    position: fixed; inset: 0; z-index: 1;
-    background: #000; display: flex;
-    align-items: center; justify-content: center;
+/* Hide all app chrome during intro */
+[data-testid="stSidebar"], [data-testid="stHeader"],
+[data-testid="stToolbar"], footer,
+[data-testid="stDecoration"], [data-testid="stStatusWidget"] {
+    display: none !important;
 }
-.intro-wrap video {
-    width: 100%%; height: 100%%;
-    object-fit: cover;
+.stApp { background: #000 !important; }
+.block-container { padding: 0 !important; max-width: 100% !important; }
+[data-testid="stBottomBlockContainer"] { padding: 0 !important; }
+
+/* Full-viewport video */
+[data-testid="stVideo"] {
+    position: fixed !important; inset: 0 !important;
+    width: 100vw !important; height: 100vh !important;
+    z-index: 999990 !important; background: #000 !important;
+}
+[data-testid="stVideo"] video {
+    width: 100% !important; height: 100% !important;
+    object-fit: cover !important;
 }
 
-.skip-btn {
-    position: fixed; bottom: 40px; right: 40px; z-index: 10;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 700; font-size: 0.95rem;
-    text-transform: uppercase; letter-spacing: 0.25em;
-    color: #FFE81F;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1.5px solid rgba(255, 232, 31, 0.6);
-    border-radius: 4px;
-    padding: 12px 28px;
-    cursor: pointer;
-    text-shadow: 0 0 8px rgba(255, 232, 31, 0.4);
+/* Star Wars skip button (Streamlit button restyled) */
+[data-testid="stButton"] {
+    position: fixed !important;
+    bottom: 40px !important; right: 40px !important;
+    z-index: 999999 !important;
+    width: auto !important;
     opacity: 0;
-    animation: fadeIn 0.8s ease-out 3s forwards;
-    transition: transform 0.2s, text-shadow 0.2s, border-color 0.2s;
+    animation: introFadeIn 0.8s ease-out 3s forwards;
 }
-.skip-btn:hover {
-    transform: scale(1.05);
-    text-shadow: 0 0 14px rgba(255, 232, 31, 0.8);
-    border-color: #FFE81F;
+[data-testid="stButton"] button {
+    position: relative !important;
+    z-index: 999999 !important;
+    font-family: 'Orbitron', sans-serif !important;
+    font-weight: 700 !important; font-size: 0.95rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.25em !important;
+    color: #FFE81F !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 1.5px solid rgba(255, 232, 31, 0.6) !important;
+    border-radius: 4px !important;
+    padding: 12px 28px !important;
+    cursor: pointer !important;
+    text-shadow: 0 0 8px rgba(255, 232, 31, 0.4) !important;
+    width: auto !important;
+    transition: transform 0.2s, text-shadow 0.2s, border-color 0.2s !important;
 }
-@keyframes fadeIn {
+[data-testid="stButton"] button:hover {
+    transform: scale(1.05) !important;
+    text-shadow: 0 0 14px rgba(255, 232, 31, 0.8) !important;
+    border-color: #FFE81F !important;
+    color: #FFE81F !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+[data-testid="stButton"] button p {
+    font-family: 'Orbitron', sans-serif !important;
+    font-weight: 700 !important;
+    color: #FFE81F !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.25em !important;
+}
+
+/* Hide the zero-height JS helper iframe */
+[data-testid="stIFrame"] { display: none !important; }
+
+@keyframes introFadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 </style>
-
-<div class="intro-wrap">
-    <video id="introVid" autoplay muted playsinline>
-        <source src="/app/static/intro.mp4" type="video/mp4">
-    </video>
-</div>
-<button class="skip-btn" id="skipBtn">Skip Intro &nbsp;&#9655;&#9655;</button>
-
-<script>
-var vid = document.getElementById('introVid');
-var btn = document.getElementById('skipBtn');
-
-function doSkip() {
-    var parentDoc = window.parent.document;
-    var allBtns = parentDoc.querySelectorAll('button[kind="secondary"]');
-    for (var i = 0; i < allBtns.length; i++) {
-        if (allBtns[i].textContent.indexOf('INTRO_SKIP_TRIGGER') !== -1) {
-            allBtns[i].click();
-            return;
-        }
-    }
-}
-
-vid.addEventListener('ended', doSkip);
-btn.addEventListener('click', doSkip);
-
-// Unmute on first click anywhere in the iframe
-document.addEventListener('click', function() { vid.muted = false; }, { once: true });
-</script>
 """
 
 
 def _render_intro() -> None:
     """Render the full-screen intro video overlay and stop the app."""
-    st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+    st.markdown(_INTRO_CSS, unsafe_allow_html=True)
 
-    [data-testid="stSidebar"], [data-testid="stHeader"],
-    [data-testid="stToolbar"], footer,
-    [data-testid="stDecoration"], [data-testid="stStatusWidget"] {
-        display: none !important;
-    }
-    .stApp { background: #000 !important; }
-    .block-container { padding: 0 !important; max-width: 100% !important; }
-    [data-testid="stBottomBlockContainer"] { padding: 0 !important; }
-    /* Hide the trigger button */
-    [data-testid="stButton"] { position: absolute; left: -9999px; }
-    /* Make the iframe fill the viewport */
-    iframe { position: fixed !important; inset: 0 !important;
-             width: 100vw !important; height: 100vh !important;
-             z-index: 999999 !important; border: none !important; }
-    </style>
-    """, unsafe_allow_html=True)
+    st.video("static/intro.mp4", autoplay=True, muted=True)
 
-    components.html(_INTRO_HTML, height=800, scrolling=False)
-
-    if st.button("INTRO_SKIP_TRIGGER", key="_intro_skip"):
+    if st.button("SKIP INTRO  \u25B6\u25B6", key="_intro_skip"):
         st.session_state.intro_complete = True
         st.rerun()
 
+    components.html(_VIDEO_END_JS, height=0)
     st.stop()
 
 
