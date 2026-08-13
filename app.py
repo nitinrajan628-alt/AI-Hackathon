@@ -105,7 +105,7 @@ _INTRO_CSS = """
 /* Star Wars skip button (Streamlit button restyled) */
 [data-testid="stButton"] {
     position: fixed !important;
-    bottom: 40px !important; right: 40px !important;
+    bottom: 100px !important; right: 40px !important;
     z-index: 999999 !important;
     width: auto !important;
     opacity: 0;
@@ -158,7 +158,7 @@ def _render_intro() -> None:
     """Render the full-screen intro video overlay and stop the app."""
     st.markdown(_INTRO_CSS, unsafe_allow_html=True)
 
-    st.video("static/intro.mp4", autoplay=True, muted=True)
+    st.video("static/intro.mp4", autoplay=True, muted=False)
 
     if st.button("SKIP INTRO  \u25B6\u25B6", key="_intro_skip"):
         st.session_state.intro_complete = True
