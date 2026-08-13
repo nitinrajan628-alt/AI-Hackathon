@@ -282,6 +282,65 @@ def _rainbow_rules() -> str:
     """
 
 
+def _responsive_rules() -> str:
+    """Overrides for tablet, phone and touch screens.
+
+    Streamlit already stacks ``st.columns`` vertically on narrow viewports, so
+    these rules only cover what the framework cannot infer: the fixed sidebar
+    width, hover-only overlay actions and the desktop-first column ordering.
+    """
+    # Strict child chain so only the chat page's own three columns are
+    # reordered - nested st.columns calls inside them must keep their order.
+    chat_columns = (
+        '.st-key-chat_layout > [data-testid="stLayoutWrapper"] '
+        '> [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]'
+    )
+    return """
+    /* Touch screens never fire :hover, so overlay actions that are only
+       revealed on hover would otherwise be unreachable. */
+    @media (hover: none) {
+        div[class*="st-key-tile_"] [data-testid="stHorizontalBlock"],
+        div[class*="_answercard"] [class*="_copy_answer"],
+        div[class*="_chartbox_"] [class*="_dlchart_"] {
+            opacity: 1;
+        }
+    }
+
+    /* The 400px sidebar swallows a tablet viewport, and on phones Streamlit
+       turns it into an overlay drawer that must stay narrower than the page. */
+    @media (max-width: 900px) {
+        [data-testid="stSidebar"] {
+            min-width: 0 !important; width: min(85vw, 320px) !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .block-container {
+            padding-top: 0.8rem; padding-left: 0.75rem; padding-right: 0.75rem;
+        }
+
+        /* Stacked chat page: the conversation leads, history and evidence
+           follow it rather than pushing it below the fold. */
+        CHAT_COLUMNS:nth-child(1) { order: 2; }
+        CHAT_COLUMNS:nth-child(2) { order: 1; }
+        CHAT_COLUMNS:nth-child(3) { order: 3; }
+
+        .rr-slide { padding: 1rem 1rem 0.8rem 1rem; }
+        .rr-slide-title { font-size: 1.15rem; }
+        .rr-slide-headline { font-size: 0.92rem; }
+        .rr-metric { min-width: 0; flex: 1 1 45%; }
+        .rr-tablewrap { -webkit-overflow-scrolling: touch; }
+        table.rr-table { font-size: 0.78rem; }
+        table.rr-table th, table.rr-table td { padding: 0.35rem 0.5rem; }
+
+        /* iOS Safari zooms the whole page in when a focused input is
+           smaller than 16px. */
+        .stTextInput input, .stTextArea textarea,
+        [data-testid="stChatInput"] textarea { font-size: 16px; }
+    }
+    """.replace("CHAT_COLUMNS", chat_columns)
+
+
 def inject_css() -> None:
     t = tokens()
     theme = current_theme()
@@ -712,6 +771,7 @@ def inject_css() -> None:
     }}
 
     {_rainbow_rules() if theme == "rainbow" else ""}
+    {_responsive_rules()}
     </style>
     """
 

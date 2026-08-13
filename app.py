@@ -150,6 +150,19 @@ _INTRO_CSS = """
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Portrait phones: cropping a landscape video to fill the screen would cut
+   most of the frame away, so letterbox it instead. */
+@media (max-aspect-ratio: 1/1) {
+    [data-testid="stVideo"] video { object-fit: contain !important; }
+}
+@media (max-width: 640px) {
+    [data-testid="stButton"] { bottom: 48px !important; right: 16px !important; }
+    [data-testid="stButton"] button {
+        font-size: 0.8rem !important; padding: 10px 18px !important;
+        letter-spacing: 0.18em !important;
+    }
+}
 </style>
 """
 

@@ -90,9 +90,12 @@ def _first_question(session: dict) -> str:
     return "No messages yet"
 
 
-# Layout: left history panel | main chat | optional evidence panel
-history_col, chat_col, *evidence_cols = st.columns(
-    [1.2, 3, 1.3] if ss.show_evidence else [1.2, 4.8])
+# Layout: left history panel | main chat | optional evidence panel.
+# The keyed container lets the responsive CSS reorder these columns once they
+# stack on a phone-sized viewport.
+with st.container(key="chat_layout"):
+    history_col, chat_col, *evidence_cols = st.columns(
+        [1.2, 3, 1.3] if ss.show_evidence else [1.2, 4.8])
 
 with history_col:
     if st.button(":material/add: New chat", key="new_chat_btn", use_container_width=True):
