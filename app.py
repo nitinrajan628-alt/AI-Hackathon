@@ -263,10 +263,8 @@ def _populate_demo_sessions() -> None:
 
     seed_result = _start_background_seed()
 
-    if not seed_result["done"]:
-        with st.spinner("Preparing demo content…"):
-            while not seed_result["done"]:
-                time.sleep(0.3)
+    while not seed_result["done"]:
+        time.sleep(0.3)
 
     if seed_result["sessions"]:
         ss.chat_sessions = copy.deepcopy(seed_result["sessions"])
@@ -329,8 +327,20 @@ _init_state()
 if not st.session_state.intro_complete:
     _render_intro()
 
-# Intro is done — show the main app
-_populate_demo_sessions()
+if "chat_sessions" not in st.session_state:
+    st.markdown(
+        '<style>[data-testid="stVideo"],.rr-intro-play-btn,'
+        '[data-testid="stButton"]{display:none!important}</style>',
+        unsafe_allow_html=True,
+    )
+    with st.spinner("Preparing demo content\u2026"):
+        start_time = time.time()
+        _populate_demo_sessions()
+        remaining = max(0, 1.5 - (time.time() - start_time))
+        if remaining:
+            time.sleep(remaining)
+    st.rerun()
+
 _sync_active_session()
 inject_css()
 
