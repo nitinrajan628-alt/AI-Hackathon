@@ -4,6 +4,7 @@ Run locally with:  streamlit run app.py
 """
 from __future__ import annotations
 
+import copy
 import threading
 import time
 import uuid
@@ -268,8 +269,8 @@ def _populate_demo_sessions() -> None:
                 time.sleep(0.3)
 
     if seed_result["sessions"]:
-        ss.chat_sessions = seed_result["sessions"]
-        ss.artifacts = seed_result.get("artifacts") or []
+        ss.chat_sessions = copy.deepcopy(seed_result["sessions"])
+        ss.artifacts = copy.deepcopy(seed_result.get("artifacts") or [])
         ss.active_session_id = seed_result["sessions"][0]["id"]
     else:
         first = _new_session()
