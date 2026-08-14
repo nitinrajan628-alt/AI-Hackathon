@@ -340,9 +340,21 @@ def _render_save_artifact_button(result, key_prefix: str) -> None:
 
 def render_evidence_panel(result) -> None:
     """Right panel: Slides / Data provenance / Query details."""
-    tabs = st.tabs(["Slides", "Provenance", "Query"])
+    has_slides = bool(result.slides)
+    has_provenance = bool(result.query_outputs)
+    has_query = bool(result.query_outputs)
 
-    with tabs[0]:
+    tab_entries = [
+        ("Provenance", has_provenance),
+        ("Slides", has_slides),
+        ("Query", has_query),
+    ]
+    tab_entries.sort(key=lambda entry: not entry[1])
+    tab_labels = [label for label, _ in tab_entries]
+    tabs = st.tabs(tab_labels)
+    tab_map = {label: tab for label, tab in zip(tab_labels, tabs)}
+
+    with tab_map["Slides"]:
         if not result.slides:
             st.caption("No report slides were cited for this answer.")
         for i, s in enumerate(result.slides):
@@ -357,7 +369,7 @@ def render_evidence_panel(result) -> None:
                 st.session_state["open_slide"] = (s.review_id, s.slide_number)
                 st.switch_page("pages/report.py")
 
-    with tabs[1]:
+    with tab_map["Provenance"]:
         if not result.query_outputs:
             st.caption("No data query was executed for this answer.")
         cat = get_catalogue()
@@ -390,7 +402,7 @@ def render_evidence_panel(result) -> None:
             for w in result.warnings:
                 st.caption(f"Warning: {w}")
 
-    with tabs[2]:
+    with tab_map["Query"]:
         if not result.query_outputs:
             st.caption("No SQL was executed for this answer.")
         for output in result.query_outputs:

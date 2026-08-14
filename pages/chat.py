@@ -163,7 +163,6 @@ with chat_col:
         st.caption(f"Questions run against the {quarter_label(ctx.current_review_id)} "
                    f"review unless you name another period.")
     with head_r:
-        ss.show_evidence = st.toggle("Evidence panel", value=ss.show_evidence)
         ss.deep_mode = st.selectbox(
             "Analysis depth", ["Auto", "Deep analysis", "Single query"],
             index=["Auto", "Deep analysis", "Single query"].index(
@@ -171,6 +170,10 @@ with chat_col:
             help="Auto runs a full diagnostic battery when a question asks for "
                  "analysis. Deep analysis forces it on for every question; "
                  "Single query forces the quick single-result route.")
+        st.toggle("Evidence panel", value=ss.show_evidence,
+                  key="_evidence_toggle",
+                  on_change=lambda: setattr(ss, 'show_evidence',
+                                            ss._evidence_toggle))
 
 _DEEP_FLAG = {"Auto": None, "Deep analysis": True, "Single query": False}
 

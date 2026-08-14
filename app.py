@@ -250,7 +250,7 @@ def _init_state() -> None:
     if ss.get("theme") not in THEMES:
         ss.theme = "light"
     if "show_evidence" not in ss:
-        ss.show_evidence = True
+        ss.show_evidence = False
     if "artifacts" not in ss:
         ss.artifacts = []
 
